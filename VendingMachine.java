@@ -1,34 +1,42 @@
 import java.util.Scanner;
+import java.util.SortedMap;
 
 public class VendingMachine {
    static double totalAmount;
 
     public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        char flag;
         System.out.println("WELCOME !! Please choose from below items :");
         System.out.println("0:  Cancel");
         System.out.println("1:  Kitkat\tRs 10 ");
         System.out.println("2:  Gems\tRs 5 ");
         System.out.println("3:  Soda\tRs 20 ");
         System.out.println("4:  Lays\tRs 6 ");
-        System.out.println("Kindly enter the item ");
-        Scanner sc = new Scanner(System.in);
-        int itemId = sc.nextInt();
-        double inputAmount=0;
-        //valid input item id check
-        if (itemId<0||itemId>5){
-            System.out.println("Please enter Valid input item");
+        do {
 
-        }
-        else{
-            if (itemId>0) {
-                System.out.println("Enter Amount");
-                inputAmount = sc.nextDouble();
+            System.out.println("Kindly enter the item ");
+
+            int itemId = sc.nextInt();
+            double inputAmount = 0;
+            //valid input item id check
+            if (itemId < 0 || itemId > 5) {
+                System.out.println("Please enter Valid input item");
+
+            } else {
+                if (itemId > 0) {
+                    System.out.println("Enter Amount");
+                    inputAmount = sc.nextDouble();
+                }
+                payment(itemId, inputAmount);
+
+
             }
-                payment(itemId,inputAmount);
+            System.out.println("Do you still want more items. Press 'Y' to Continue and 'N' to exit");
+            flag= sc.next().charAt(0);
+        }while(flag=='Y'||flag=='y');
 
-
-        }
-
+        System.out.println("Total Amount in vending machine = "+totalAmount);
     }
 
     static void payment(int itemId,double inputAmount ){
@@ -79,7 +87,6 @@ public class VendingMachine {
                     }
                     break;
             }
-        System.out.println("Total Amount in vending machine = "+totalAmount);
     }
 
 }
