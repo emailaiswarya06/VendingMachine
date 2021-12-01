@@ -1,107 +1,116 @@
 
-
-import java.util.Scanner;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class VendingMachine {
-   static double totalAmount;
+    static double totalAmount,inputAmount,balanceAmount;
+    static int ledgerSNo=0;
+    static String[][] itemDetails;
+    static List<Object> ledger = new ArrayList<>();
+    static Map<Integer,Object> displayLedger =new HashMap<>();
 
-    static int itemValue1 = 10;
-    static int itemValue2 = 5;
-    static int itemValue3 = 20;
-    static int itemValue4 = 6;
+
+    //static List<Object> ledger = new ArrayList<>(Arrays.asList("S.No\t\tDate\t\tItem ID\t\tItem Name\t\tItem Value\t\tAmount Entered" +
+          //  "\t\tBalance returned\\ttAmount in machine\t\t"));
+
 
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        char flag;
 
-        int itemValue=0;
+        itemDetails = new String[][]{{"0","Cancel", "0"}, {"1","Kitkat", "10"}, {"2", "Gems","5"}, {"3","Soda", "20"}, {"4", "Lays", "6"}};
 
         System.out.println("WELCOME !! Please choose from below items :");
-        System.out.println("0:  Cancel");
-        System.out.println("1:  Kitkat\t Rs "+itemValue1);
-        System.out.println("2:  Gems\t Rs "+itemValue2);
-        System.out.println("3:  Soda\tRs "+itemValue3);
-        System.out.println("4:  Lays\tRs "+itemValue4);
+        System.out.println(itemDetails[0][0] + ":  " + itemDetails[0][1]);
+        System.out.println(itemDetails[1][0] + ":  " + itemDetails[1][1] + "\t Rs " + itemDetails[1][2]);
+        System.out.println(itemDetails[2][0] + ":  " + itemDetails[2][1] + "\t Rs " + itemDetails[2][2]);
+        System.out.println(itemDetails[3][0] + ":  " + itemDetails[3][1] + "\tRs " + itemDetails[3][2]);
+        System.out.println(itemDetails[4][0] + ":  " + itemDetails[4][1] + "\tRs " + itemDetails[4][2]);
 
+
+        int itemId;
+        char flag,ledgerFlag;
+        Scanner sc = new Scanner(System.in);
 
         do {
 
-            System.out.println("Kindly enter the item ");
-            int itemId = sc.nextInt();
-
-            switch (itemId){
-
-                case 0:
-                    break;
-
-                case 1:
-                    itemValue = itemValue1;
-                    break;
-                case 2:
-                    itemValue = itemValue2;
-                    break;
-                case 3:
-                    itemValue = itemValue3;
-                    break;
-                case 4:
-                    itemValue = itemValue4;
-                    break;
-
-            }
+            System.out.println("Please enter Item ID ");
+            itemId = sc.nextInt();
 
 
-            double inputAmount = 0;
-            //valid input item id check
-            if (itemId < 0 || itemId > 4) {
-                System.out.println("Please enter Valid input item");
+            if (itemId >= 0 && itemId <=4) {
+
+                vendingMachinePayment(Integer.parseInt(itemDetails[itemId][0]), Double.parseDouble(itemDetails[itemId][2]),itemDetails[itemId][1]);
 
             } else {
-                if (itemId > 0) {
-                    System.out.println("Enter Amount");
-                    inputAmount = sc.nextDouble();
-                }
-                payment(itemId, itemValue,inputAmount);
+
+                System.out.println("Please enter Valid input item");
 
             }
             System.out.println("Do you still want more items. Press 'Y' to Continue and 'N' to exit");
             flag= sc.next().charAt(0);
+
+
         }while(flag=='Y'||flag=='y');
 
+
         System.out.println("Total Amount in vending machine = "+totalAmount);
-    }
 
-    static void payment(int itemId,int itemValue,double inputAmount ){
-                double balanceAmount;
+        System.out.println("Do you wish to see the previous transaction details/ ledger");
+        ledgerFlag= sc.next().charAt(0);
 
-                switch (itemId){
+        if (ledgerFlag=='y'||ledgerFlag=='Y'){
 
-                    case 0:
-                        System.out.println("Thank you! Please collect your money back");
-                        break;
+//using for loop
 
-                    default:
-                        if (itemId<5){
+            System.out.println("Using For Loop\n ");
+            for(Map.Entry e : displayLedger.entrySet()){
+                System.out.println(e.getKey()+ "  " +e.getValue());
+            }
 
+        }
 
-                            if (inputAmount>=itemValue){
-                                balanceAmount = inputAmount -itemValue;
-                                totalAmount = totalAmount+balanceAmount;
-                                System.out.println("Balance :"+balanceAmount);
-                            }
-                            else {
-                                System.out.println("Insufficient Balance");
-                            }
-
-                        }
-                        else {
-
-                            System.out.println("Please enter a valid input.");
-                        }
-
-                        break;
-
-                }
 
     }
+
+     static void vendingMachinePayment(int itemId, double itemValue, String itemName){
+         inputAmount = 0;
+         if (itemId > 0) {
+             System.out.println("Enter Amount");
+             Scanner sc = new Scanner(System.in);
+             inputAmount = sc.nextDouble();
+         }
+
+         switch (itemId) {
+
+             case 0:
+                 System.out.println("Thank you! Please collect your money back");
+                 break;
+
+             default:
+
+                 if (inputAmount >= itemValue) {
+                     balanceAmount = inputAmount - itemValue;
+                     totalAmount = totalAmount + balanceAmount;
+                     System.out.println("Balance :" + balanceAmount);
+
+                     String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+
+
+                     ++ledgerSNo;
+
+                     ledger = Arrays.asList(timeStamp, itemId, itemName, itemValue, inputAmount, balanceAmount, totalAmount);
+
+                     displayLedger.put(ledgerSNo,ledger);
+
+                 } else {
+                     System.out.println("Insufficient Balance");
+                 }
+
+                 break;
+
+
+         }
+
+     }
+
 
 }
